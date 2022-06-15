@@ -7,31 +7,42 @@ import { StyleSheet, View } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import axios from '../../api/axios';
 import { AuthContext } from '../../contexts/AuthContext';
+import LoginError from './LoginError';
 
 export default function LoginForm() {
   const { setTokens } = useContext(AuthContext);
+  const [componentState, setComponentState] = useState({
+    loading: false,
+    error: false,
+  });
   const {
     control,
     handleSubmit,
-    // eslint-disable-next-line no-unused-vars
-    formState: { errors },
   } = useForm();
   const [show, setShow] = useState(false);
 
   const handleLoginClick = (data) => {
+    setComponentState({
+      loading: true,
+      error: false,
+    });
     axios
       .post('/login', data)
       .then((response) => {
-        console.log(response);
         setTokens(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response.data);
+        setComponentState({
+          loading: false,
+          error: true,
+        });
       });
   };
 
   return (
     <>
+      {(!componentState.loading && componentState.error) && <LoginError />}
       <View style={styles.input_container}>
         <Controller
           rules={{ required: 'Username is required' }}
@@ -120,6 +131,8 @@ export default function LoginForm() {
         <Button
           onPress={handleSubmit(handleLoginClick)}
           style={styles.login_button}
+          isLoading={componentState.loading}
+          isLoadingText="Logging..."
         >
           Login
         </Button>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'native-base';
+import { Button, StatusBar } from 'native-base';
 import {
   Keyboard, StyleSheet, TouchableWithoutFeedback, View,
 } from 'react-native';
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: StatusBar.currentHeight,
   },
   input_container: {
     width: '80%',
