@@ -1,13 +1,14 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Button } from 'native-base';
 import {
   Keyboard, StyleSheet, TouchableWithoutFeedback, View,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Logo from '../../components/Logo/Logo';
 import ForgotPasswordForm from './ForgotPasswordForm';
 
-export default function ForgotPasswordPage({ navigation }) {
+export default function ForgotPasswordPage() {
+  const navigation = useNavigation();
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>

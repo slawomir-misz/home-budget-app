@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Input, Icon, Button,
+  Input, Icon, Button, Text,
 } from 'native-base';
 import { StyleSheet, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,26 +9,36 @@ import Result from './Result';
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
+  const [formInputError, setFormInputError] = useState(false);
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
     result: false,
   });
   const handleLoginClick = () => {
-    setComponentState((prevState) => ({
-      ...prevState, loading: true,
-    }));
-    axios.patch(`/user/resetPassword/${email}`).then(() => {
+    if (email) {
       setComponentState((prevState) => ({
-        ...prevState, loading: false, result: true,
+        ...prevState, loading: true,
       }));
-    }).catch(() => {
-      setComponentState({
-        loading: false,
-        error: true,
-        result: true,
+      axios.patch(`/user/resetPassword/${email}`).then(() => {
+        setComponentState((prevState) => ({
+          ...prevState, loading: false, result: true,
+        }));
+      }).catch(() => {
+        setComponentState({
+          loading: false,
+          error: true,
+          result: true,
+        });
       });
-    });
+    } else {
+      setFormInputError(true);
+    }
+  };
+
+  const handleInputChange = (text) => {
+    setEmail(text);
+    setFormInputError(false);
   };
 
   if (!componentState.loading && componentState.result) {
@@ -41,8 +51,9 @@ export default function ForgotPasswordForm() {
     <>
       <View style={styles.input_container}>
         <Input
-          onChange={(e) => setEmail(e.nativeEvent.text)}
+          onChange={(e) => handleInputChange(e.nativeEvent.text)}
           style={styles.input}
+          isInvalid={formInputError}
           InputLeftElement={(
             <Icon
               as={<MaterialIcons name="email" />}
@@ -53,11 +64,16 @@ export default function ForgotPasswordForm() {
       )}
           placeholder="Email"
         />
+        {formInputError && (
+        <Text p={1} color="danger.500">
+          Email is required
+        </Text>
+        )}
       </View>
       <View style={styles.input_container}>
         <Button
           onPress={handleLoginClick}
-          style={styles.login_button}
+          style={styles.button}
           isLoading={componentState.loading}
           isLoadingText="Sending..."
         >
@@ -69,12 +85,6 @@ export default function ForgotPasswordForm() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   input_container: {
     width: '80%',
     padding: 10,
@@ -82,18 +92,8 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
   },
-  login_button: {
+  button: {
     margin: 0,
     backgroundColor: '#3b82f6',
-  },
-  register_button: {
-    margin: 0,
-    borderColor: '#3b82f6',
-  },
-  forgot_password_container: {
-    width: '80%',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    paddingBottom: 10,
   },
 });
