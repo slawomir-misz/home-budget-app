@@ -6,14 +6,19 @@ import { AuthContext } from '../contexts/AuthContext';
 export default function useRefreshToken() {
   const { tokens, setTokens } = useContext(AuthContext);
 
-  const refresh = () => {
-    axios.get('/refresh', {
+  const refresh = async () => {
+    const res = await axios.get('/refresh', {
       headers: { Authorization: `Bearer ${tokens.refresh_token}` },
     }).then((response) => {
       setTokens(response.data);
+      return response.data.access_token;
     }).catch((error) => {
-      console.log(error);
+      setTokens({
+        access_token: '',
+        refresh_token: '',
+      });
     });
+    return res;
   };
   return refresh;
 }

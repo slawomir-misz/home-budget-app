@@ -1,10 +1,9 @@
+/* eslint-disable react/prop-types */
 import { Button, Text } from 'native-base';
 import React from 'react';
-import useRefreshToken from '../../hooks/useRefreshToken';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 
-export default function DashboardPage() {
-  const refresh = useRefreshToken();
+export default function DashboardPage({ navigation }) {
   const axios = useAxiosInterceptors();
 
   const getUsers = () => {
@@ -12,13 +11,11 @@ export default function DashboardPage() {
       console.log(response.data);
     }).catch((error) => {
       console.log(error);
+      navigation.navigate('Login');
     });
   };
   return (
     <>
-      <Text>DashboardPage</Text>
-      <Button onPress={() => refresh()}>Refresh token</Button>
-      <Text>DashboardPage</Text>
       <Text>DashboardPage</Text>
       <Button onPress={getUsers}>Get users</Button>
     </>

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
   Input, Icon, Button,
 } from 'native-base';
@@ -7,23 +7,31 @@ import { MaterialIcons } from '@expo/vector-icons';
 import {
   Keyboard, StyleSheet, TouchableWithoutFeedback, View,
 } from 'react-native';
-import axios from '../../api/axios';
 import Logo from '../../components/Logo/Logo';
-import { AuthContext } from '../../contexts/AuthContext';
+import axios from '../../api/axios';
 
-export default function LoginPage({ navigation }) {
-  const { setTokens } = useContext(AuthContext);
-  const [show, setShow] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export default function ForgotPasswordPage({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [componentState, setComponentState] = useState({
+    loading: false,
+    error: '',
+  });
   const handleLoginClick = () => {
-    axios.post('/login', {
-      login: username,
-      password,
-    }).then((response) => {
-      setTokens(response.data);
+    console.log(componentState);
+    setComponentState((prevState) => ({
+      ...prevState, loading: true,
+    }));
+    axios.patch(`/user/resetPassword/${email}`).then((response) => {
+      console.log(response);
+      setComponentState((prevState) => ({
+        ...prevState, loading: false,
+      }));
     }).catch((error) => {
       console.log(error);
+      setComponentState({
+        loading: false,
+        error: error.response.data,
+      });
     });
   };
   return (
@@ -32,67 +40,37 @@ export default function LoginPage({ navigation }) {
         <Logo />
         <View style={styles.input_container}>
           <Input
-            onChange={(e) => setUsername(e.nativeEvent.text)}
+            onChange={(e) => setEmail(e.nativeEvent.text)}
             style={styles.input}
             InputLeftElement={(
               <Icon
-                as={<MaterialIcons name="person" />}
+                as={<MaterialIcons name="email" />}
                 size={5}
                 ml="2"
                 color="#3b82f6"
               />
             )}
-            placeholder="Username"
+            placeholder="Email"
           />
-        </View>
-        <View style={styles.input_container}>
-          <Input
-            onChange={(e) => setPassword(e.nativeEvent.text)}
-            style={styles.input}
-            type={show ? 'text' : 'password'}
-            InputLeftElement={(
-              <Icon
-                as={<MaterialIcons name="lock" />}
-                size={5}
-                ml="2"
-                color="#3b82f6"
-              />
-            )}
-            InputRightElement={(
-              <Icon
-                as={
-                  <MaterialIcons name={show ? 'visibility' : 'visibility-off'} />
-                }
-                size={5}
-                mr="2"
-                color="#3b82f6"
-                onPress={() => setShow(!show)}
-              />
-            )}
-            placeholder="Password"
-          />
-        </View>
-        <View style={styles.forgot_password_container}>
-          <Button variant="unstyled" onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Button>
         </View>
         <View style={styles.input_container}>
           <Button
             onPress={handleLoginClick}
             style={styles.login_button}
           >
-            Log in
+            Send new password
           </Button>
         </View>
         <View style={styles.input_container}>
           <Button
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => navigation.navigate('Login')}
             style={styles.register_button}
             variant="outline"
             _text={{
               color: '#3b82f6',
             }}
           >
-            Register
+            Login page
           </Button>
         </View>
       </View>
