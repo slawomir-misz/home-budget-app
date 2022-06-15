@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { Input, Icon, Button } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import {
   Keyboard, StyleSheet, TouchableWithoutFeedback, View,
 } from 'react-native';
+import axios from '../../api/axios';
 import LoginLogo from './LoginLogo';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export default function LoginPage() {
-  const [show, setShow] = React.useState(false);
+  const { setTokens } = useContext(AuthContext);
+  const [show, setShow] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const handleLoginClick = () => {
+    axios.post('/login', {
+      login: username,
+      password,
+    }).then((response) => {
+      setTokens(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <LoginLogo />
         <View style={styles.input_container}>
           <Input
+            onChange={(e) => setUsername(e.nativeEvent.text)}
             style={styles.input}
             InputLeftElement={(
               <Icon
@@ -28,6 +44,7 @@ export default function LoginPage() {
         </View>
         <View style={styles.input_container}>
           <Input
+            onChange={(e) => setPassword(e.nativeEvent.text)}
             style={styles.input}
             type={show ? 'text' : 'password'}
             InputRightElement={(
@@ -46,7 +63,7 @@ export default function LoginPage() {
         </View>
         <View style={styles.input_container}>
           <Button
-            onPress={() => console.log('hello world')}
+            onPress={handleLoginClick}
             style={styles.login_button}
           >
             Log in
