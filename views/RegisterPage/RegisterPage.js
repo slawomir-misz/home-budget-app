@@ -12,6 +12,7 @@ export default function RegisterPage() {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <Logo />
         <RegisterForm />
         <View style={styles.input_container}>

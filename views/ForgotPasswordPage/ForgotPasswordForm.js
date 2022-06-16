@@ -20,7 +20,7 @@ export default function ForgotPasswordForm() {
       setComponentState((prevState) => ({
         ...prevState, loading: true,
       }));
-      axios.patch(`/user/resetPassword/${email}`).then(() => {
+      axios.patch(`/user/password/reset/${email}`).then(() => {
         setComponentState((prevState) => ({
           ...prevState, loading: false, result: true,
         }));

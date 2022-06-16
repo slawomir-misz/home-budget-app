@@ -12,6 +12,7 @@ export default function ForgotPasswordPage() {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <Logo />
         <ForgotPasswordForm />
         <View style={styles.input_container}>

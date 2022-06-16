@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
 import {
-  Input, Icon, Button, Text,
+  Avatar, Text, View, Input, Icon, Button,
 } from 'native-base';
-import { MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import axios from '../../api/axios';
-import RegisterResult from './RegisterResult';
+import { StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
+import Result from './Result';
 
-export default function RegisterForm() {
+const avatar = require('../../assets/avatar.png');
+
+export default function AccountManageForm() {
+  const axios = useAxiosInterceptors();
   const {
     control,
     handleSubmit,
     watch,
   } = useForm();
-  const EMAIL_REGEX = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
-  const USERNAME_REGEX = /^[a-zA-Z0-9_.-]*$/;
   const password = watch('password');
   const [show, setShow] = useState(false);
   const [componentState, setComponentState] = useState({
@@ -24,116 +25,54 @@ export default function RegisterForm() {
     result: false,
   });
 
-  const handleRegisterClick = (data) => {
-    console.log(data);
+  const handlePasswordChange = (data) => {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post('/user/register', {
-      login: data.login,
-      password: data.password,
-      email: data.email,
-    }).then(() => {
+    axios.patch(`/user/password/change?password=${data.password}`).then(() => {
       setComponentState((prevState) => ({
         ...prevState, loading: false, result: true,
       }));
-    }).catch((error) => {
+    }).catch(() => {
       setComponentState({
         loading: false,
-        error: error.response.data,
+        error: true,
         result: true,
       });
     });
   };
 
-  if (!componentState.loading && componentState.result) {
-    return <RegisterResult error={componentState.error} />;
-  }
-
   return (
-    <>
+    <View style={styles.container}>
+      <Avatar size="lg" source={avatar} style={styles.avatar} />
       <View style={styles.input_container}>
-        <Controller
-          rules={{
-            required: 'Username is required',
-            minLength: {
-              value: 5,
-              message: 'Username should have at least 5 characters long',
-            },
-            maxLength: {
-              value: 20,
-              message: 'Username should be max 20 charcters long',
-            },
-            pattern: { value: USERNAME_REGEX, message: 'Username is invalid' },
-          }}
-          control={control}
-          name="login"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                isInvalid={!!error}
-                style={styles.input}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="person" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
+        <Input
+          style={styles.input}
+          isDisabled
+          InputLeftElement={(
+            <Icon
+              as={<MaterialIcons name="person" />}
+              size={5}
+              ml="2"
+              color="#3b82f6"
+            />
                 )}
-                placeholder="Username"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          placeholder="Username"
         />
       </View>
       <View style={styles.input_container}>
-        <Controller
-          rules={{
-            pattern: { value: EMAIL_REGEX, message: 'Email is invalid' },
-            required: 'Email is required',
-          }}
-          control={control}
-          name="email"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                isInvalid={!!error}
-                style={styles.input}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="mail" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
+        <Input
+          style={styles.input}
+          isDisabled
+          InputLeftElement={(
+            <Icon
+              as={<MaterialIcons name="mail" />}
+              size={5}
+              ml="2"
+              color="#3b82f6"
+            />
                 )}
-                placeholder="Email"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          placeholder="Email"
         />
       </View>
       <View style={styles.input_container}>
@@ -237,37 +176,39 @@ export default function RegisterForm() {
         />
       </View>
       <View style={styles.input_container}>
-        <Button
-          onPress={handleSubmit(handleRegisterClick)}
-          style={styles.login_button}
-        >
-          Register
-        </Button>
+        {(!componentState.loading && componentState.result)
+          ? <Result error={componentState.error} message="New password is active" />
+          : (
+            <Button
+              onPress={handleSubmit(handlePasswordChange)}
+              style={styles.button}
+              isLoading={componentState.loading}
+              isLoadingText="Changing..."
+            >
+              Change password
+            </Button>
+          )}
       </View>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  avatar: {
+    marginVertical: 25,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: 'center',
   },
   input_container: {
-    width: '80%',
-    padding: 10,
+    width: '100%',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
   },
   input: {
     height: 50,
   },
-  login_button: {
+  button: {
     margin: 0,
     backgroundColor: '#3b82f6',
-  },
-  register_button: {
-    margin: 0,
-    borderColor: '#3b82f6',
   },
 });

@@ -31,8 +31,7 @@ export default function LoginForm() {
       .then((response) => {
         setTokens(response.data);
       })
-      .catch((error) => {
-        console.log(error.response.data);
+      .catch(() => {
         setComponentState({
           loading: false,
           error: true,
