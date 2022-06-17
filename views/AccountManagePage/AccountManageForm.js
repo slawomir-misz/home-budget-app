@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
-import Result from './Result';
+import Result from '../../components/Result/Result';
 
 const avatar = require('../../assets/avatar.png');
 

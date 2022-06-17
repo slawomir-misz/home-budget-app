@@ -5,13 +5,13 @@ import {
 } from 'native-base';
 import { StyleSheet, View } from 'react-native';
 
-export default function Result({ error, message }) {
+export default function Result({ error, errorMessage, message }) {
   if (error) {
     return (
       <View style={styles.result_container}>
         <CloseIcon size="5" mt="0.5" color="danger.500" />
         <Text color="danger.500" fontSize="md">
-          Some error occured, try again
+          {errorMessage || 'Some error occured, try again'}
         </Text>
       </View>
     );
