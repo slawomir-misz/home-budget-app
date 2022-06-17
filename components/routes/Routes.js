@@ -60,7 +60,7 @@ function TabNavigator() {
       <Tab.Screen name="Cards" component={CardsPage} />
       <Tab.Screen name="Charts" component={ChartsPage} />
       <Tab.Screen name="Account" component={AccountManagePage} />
-      <Tab.Screen name="Info" component={InfoPage} />
+      <Tab.Screen name="Info" component={InfoPage} options={{ headerShown: false }} />
       <Tab.Screen name="Logout" component={LogoutPage} options={{ headerShown: false }} />
     </Tab.Navigator>
   );

@@ -1,7 +1,10 @@
-import { Button, Text, View } from 'native-base';
+import {
+  Button, Icon, Text, View,
+} from 'native-base';
 import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Octicons } from '@expo/vector-icons';
 import { AuthContext } from '../../contexts/AuthContext';
 
 export default function LogoutPage() {
@@ -15,8 +18,15 @@ export default function LogoutPage() {
   };
   return (
     <View style={styles.view}>
+      <Icon
+        as={Octicons}
+        name="sign-out"
+        size={20}
+        mb={3}
+        color="#3b82f6"
+      />
       <Text fontSize="2xl">Oh no! You are leaving..</Text>
-      <Text fontSize="2xl">Are you sure?</Text>
+      <Text fontSize="2xl" mb={3}>Are you sure?</Text>
       <Button
         onPress={() => navigation.navigate('Cards')}
         style={styles.button}
