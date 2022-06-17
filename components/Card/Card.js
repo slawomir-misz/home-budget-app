@@ -1,26 +1,54 @@
 /* eslint-disable react/prop-types */
-import { Text } from 'native-base';
-import React from 'react';
+import {
+  Icon, Pressable, Text, View,
+} from 'native-base';
+import { Octicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import {
   StyleSheet, ImageBackground, Dimensions,
 } from 'react-native';
+import DeleteCardModal from './DeleteCardModal';
 
 const { width } = Dimensions.get('window');
 const backgroundImage = require('../../assets/card_background.jpg');
 
 export default function Card({
-  balance, cardNumber, type, name,
+  balance, cardNumber, type, name, deleteButton,
 }) {
+  const [deleteCardModalVisible, setDeleteCardModalVisible] = useState(false);
   return (
-    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
-      <Text fontSize="2xl" style={styles.card_balance}>
-        $
-        {' '}
-        {balance}
-      </Text>
-      <Text fontSize="xl" style={styles.card_number}>{`****  ****  ****  ${cardNumber}`}</Text>
-      <Text fontSize="lg" style={styles.card_type}>{`${name} ${type}`}</Text>
-    </ImageBackground>
+    <>
+      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
+        <View style={styles.card_header}>
+          <Text fontSize="2xl" style={styles.card_balance}>
+            $
+            {' '}
+            {balance}
+          </Text>
+          {deleteButton
+          && (
+          <Pressable onPress={() => setDeleteCardModalVisible(true)}>
+            <Icon
+              as={Octicons}
+              name="x"
+              size={6}
+              color="#fff"
+            />
+          </Pressable>
+          )}
+        </View>
+        <Text fontSize="2xl" style={styles.card_number}>{`****  ****  ****  ${cardNumber}`}</Text>
+        <Text fontSize="xl" style={styles.card_type}>{`${name} ${type}`}</Text>
+      </ImageBackground>
+      {deleteCardModalVisible
+      && (
+      <DeleteCardModal
+        deleteCardModalVisible={deleteCardModalVisible}
+        setDeleteCardModalVisible={setDeleteCardModalVisible}
+        cardNumber={cardNumber}
+      />
+      ) }
+    </>
   );
 }
 
@@ -33,12 +61,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'space-around',
   },
+  card_header: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   card_number: {
     textAlign: 'center',
     color: '#fff',
   },
   card_balance: {
-    paddingLeft: 20,
     color: '#fff',
     fontWeight: '500',
   },

@@ -16,6 +16,7 @@ import AccountManagePage from '../../views/AccountManagePage/AccountManagePage';
 import InfoPage from '../../views/InfoPage/InfoPage';
 import AddCardPage from '../../views/AddCardPage/AddCardPage';
 import { CardsProvider } from '../../contexts/CardsContext';
+import LogoutPage from '../../views/LogoutPage/LogoutPage';
 
 function TabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -60,7 +61,7 @@ function TabNavigator() {
       <Tab.Screen name="Charts" component={ChartsPage} />
       <Tab.Screen name="Account" component={AccountManagePage} />
       <Tab.Screen name="Info" component={InfoPage} />
-      <Tab.Screen name="Logout" component={InfoPage} />
+      <Tab.Screen name="Logout" component={LogoutPage} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }

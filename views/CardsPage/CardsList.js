@@ -43,6 +43,7 @@ export default function CardsList() {
           type={item.type}
           name={item.name}
           key={item.cardNumber}
+          deleteButton
         />
       ))}
     </ScrollView>
