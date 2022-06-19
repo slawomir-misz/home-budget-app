@@ -17,6 +17,8 @@ import InfoPage from '../../views/InfoPage/InfoPage';
 import AddCardPage from '../../views/AddCardPage/AddCardPage';
 import { CardsProvider } from '../../contexts/CardsContext';
 import LogoutPage from '../../views/LogoutPage/LogoutPage';
+import { TransactionsProvider } from '../../contexts/TransactionsContext';
+import AddTransactionPage from '../../views/AddTransactionPage/AddTransactionPage';
 
 function TabNavigator() {
   const Tab = createBottomTabNavigator();
@@ -60,8 +62,16 @@ function TabNavigator() {
       <Tab.Screen name="Cards" component={CardsPage} />
       <Tab.Screen name="Charts" component={ChartsPage} />
       <Tab.Screen name="Account" component={AccountManagePage} />
-      <Tab.Screen name="Info" component={InfoPage} options={{ headerShown: false }} />
-      <Tab.Screen name="Logout" component={LogoutPage} options={{ headerShown: false }} />
+      <Tab.Screen
+        name="Info"
+        component={InfoPage}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Logout"
+        component={LogoutPage}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 }
@@ -95,16 +105,19 @@ export default function Routes() {
   }
   return (
     <CardsProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Tabs"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="AddCard" component={AddCardPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <TransactionsProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Tabs"
+              component={TabNavigator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="AddCard" component={AddCardPage} />
+            <Stack.Screen name="AddTransaction" component={AddTransactionPage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </TransactionsProvider>
     </CardsProvider>
   );
 }

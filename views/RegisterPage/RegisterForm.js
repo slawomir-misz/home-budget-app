@@ -240,6 +240,8 @@ export default function RegisterForm() {
         <Button
           onPress={handleSubmit(handleRegisterClick)}
           style={styles.login_button}
+          isLoading={componentState.loading}
+          isLoadingText="Registering..."
         >
           Register
         </Button>

@@ -12,7 +12,7 @@ export default function LoginPage() {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundcolor="#fff" />
+        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <Logo />
         <LoginForm />
         <View style={styles.input_container}>

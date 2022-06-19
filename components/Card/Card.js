@@ -3,43 +3,47 @@ import {
   Icon, Pressable, Text, View,
 } from 'native-base';
 import { Octicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   StyleSheet, ImageBackground, Dimensions,
 } from 'react-native';
 import DeleteCardModal from './DeleteCardModal';
+import { TransactionsContext } from '../../contexts/TransactionsContext';
 
 const { width } = Dimensions.get('window');
 const backgroundImage = require('../../assets/card_background.jpg');
+const backgroundImageGray = require('../../assets/card_background_gray.jpg');
 
 export default function Card({
   balance, cardNumber, type, name, deleteButton,
 }) {
+  const { setSelectedCard, selectedCard } = useContext(TransactionsContext);
   const [deleteCardModalVisible, setDeleteCardModalVisible] = useState(false);
   return (
     <>
-      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
-        <View style={styles.card_header}>
-          <Text fontSize="2xl" style={styles.card_balance}>
-            $
-            {' '}
-            {balance}
-          </Text>
-          {deleteButton
-          && (
-          <Pressable onPress={() => setDeleteCardModalVisible(true)}>
-            <Icon
-              as={Octicons}
-              name="x"
-              size={6}
-              color="#fff"
-            />
-          </Pressable>
-          )}
-        </View>
-        <Text fontSize="2xl" style={styles.card_number}>{`****  ****  ****  ${cardNumber}`}</Text>
-        <Text fontSize="xl" style={styles.card_type}>{`${name} ${type}`}</Text>
-      </ImageBackground>
+      <Pressable onPress={() => setSelectedCard(cardNumber)}>
+        <ImageBackground source={selectedCard === cardNumber ? backgroundImage : backgroundImageGray} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
+          <View style={styles.card_header}>
+            <Text fontSize="2xl" style={styles.card_balance}>
+              $
+              {' '}
+              {balance}
+            </Text>
+            {deleteButton && (selectedCard === cardNumber) ? (
+              <Pressable onPress={() => setDeleteCardModalVisible(true)}>
+                <Icon
+                  as={Octicons}
+                  name="x"
+                  size={6}
+                  color="#fff"
+                />
+              </Pressable>
+            ) : null}
+          </View>
+          <Text fontSize="2xl" style={styles.card_number}>{`****  ****  ****  ${cardNumber}`}</Text>
+          <Text fontSize="xl" style={styles.card_type}>{`${name} ${type}`}</Text>
+        </ImageBackground>
+      </Pressable>
       {deleteCardModalVisible
       && (
       <DeleteCardModal

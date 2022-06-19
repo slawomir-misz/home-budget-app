@@ -5,31 +5,32 @@ import React, {
 } from 'react';
 import useAxiosInterceptors from '../hooks/useAxiosInterceptors';
 
-export const CardsContext = createContext('');
+export const TransactionsContext = createContext('');
 
-export const CardsProvider = ({ children }) => {
-  const [cards, setCards] = useState([]);
+export const TransactionsProvider = ({ children }) => {
+  const [transactions, setTransactions] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const axios = useAxiosInterceptors();
 
   useEffect(() => {
-    axios.get('/card/get').then((response) => {
-      setCards(response.data);
+    axios.get(`/transaction/get/${selectedCard}`).then((response) => {
+      setTransactions(response.data);
       setLoading(false);
     }).catch((error) => {
       setIsError(error.response.data.message);
       setLoading(false);
     });
-  }, []);
+  }, [selectedCard]);
 
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <CardsContext.Provider value={{
-      cards, setCards, loading, isError,
+    <TransactionsContext.Provider value={{
+      transactions, setLoading, loading, isError, selectedCard, setSelectedCard,
     }}
     >
       {children}
-    </CardsContext.Provider>
+    </TransactionsContext.Provider>
   );
 };
