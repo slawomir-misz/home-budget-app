@@ -1,20 +1,20 @@
 /* eslint-disable react/prop-types */
 import { Icon, IconButton } from 'native-base';
 import React from 'react';
-import { Octicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
 
 export default function TransactionIcon({ transactionCategory }) {
   const getIcon = () => {
     switch (transactionCategory) {
       case 'Shopping':
-        return 'squirrel';
+        return 'store';
       case 'Transfer':
-        return 'squirrel';
-      case 'Subsciptions':
-        return 'squirrel';
+        return 'swap-horizontal';
+      case 'Subscriptions':
+        return 'netflix';
       case 'Bills':
-        return 'squirrel';
+        return 'home-lightning-bolt-outline';
       default:
         return 'alert';
     }
@@ -26,7 +26,7 @@ export default function TransactionIcon({ transactionCategory }) {
       p={4}
       icon={(
         <Icon
-          as={Octicons}
+          as={MaterialCommunityIcons}
           name={getIcon(transactionCategory)}
           size={6}
           color="#548BF5"

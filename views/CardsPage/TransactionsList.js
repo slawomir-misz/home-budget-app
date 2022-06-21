@@ -1,23 +1,57 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import {
-  Button, ScrollView, Text, View,
+  Button, Icon, IconButton, ScrollView, Text, View,
 } from 'native-base';
-import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import { CardsContext } from '../../contexts/CardsContext';
 import { TransactionsContext } from '../../contexts/TransactionsContext';
 import Transaction from './Transaction';
+import Result from '../../components/Result/Result';
 
 export default function TransactionsList() {
   const {
-    transactions, loading, error, selectedCard,
+    transactions, loading, isError, selectedCard,
   } = useContext(TransactionsContext);
-  const { cards } = useContext(CardsContext);
   const navigation = useNavigation();
 
+  const renderItem = (data) => (
+    <View style={{ alignItems: 'center' }}>
+      <Transaction
+        category={data.item.category}
+        date={data.item.createdDate}
+        price={data.item.price}
+        type={data.item.type}
+      />
+    </View>
+  );
+
+  const renderHiddenItem = (data, rowMap) => (
+    <View style={styles.rowBack}>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => console.log(rowMap, data.item.key)}
+      >
+        <Text style={styles.backTextWhite}>Delete</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (isError) {
+    <View style={{
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    >
+      <Result error errorMessage={isError} />
+    </View>;
+  }
   if (loading) {
     return (
       <View style={{
@@ -40,37 +74,48 @@ export default function TransactionsList() {
     );
   }
   return (
-    <ScrollView
-      style={{ flex: 1, width: '100%' }}
-      horizontal={false}
-    >
-      {transactions.length > 0
-      && (
-      <Text style={styles.day_info} bold color="gray.400">
-        Today
-      </Text>
-      )}
-      {transactions.map((item, idx) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <View style={{ alignItems: 'center' }} key={idx}>
-          <Transaction
-            category={item.category}
-            date={item.createdDate}
-            price={item.price}
-            type={item.type}
-          />
-        </View>
-      ))}
-    </ScrollView>
+    <>
+      {selectedCard && transactions.length > 0
+        ? (
+          <View style={{
+            width: '100%',
+            alignItems: 'center',
+            paddingHorizontal: 10,
+            flexDirection: 'row',
+          }}
+          >
+            <IconButton
+              onPress={() => navigation.navigate('AddTransaction')}
+              style={styles.iconButton}
+              p={4}
+              icon={(
+                <Icon
+                  as={MaterialCommunityIcons}
+                  name="plus-thick"
+                  size={6}
+                  color="#acacad"
+                />
+            )}
+            />
+          </View>
+        )
+        : null }
+      <View style={{ flex: 1, width: '100%' }}>
+        <SwipeListView
+          data={transactions}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-150}
+          previewRowKey="0"
+          previewOpenValue={-40}
+          previewOpenDelay={3000}
+        />
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    width: '100%',
-  },
   day_info: {
     alignSelf: 'flex-start',
     marginLeft: '10%',
@@ -80,5 +125,17 @@ const styles = StyleSheet.create({
     width: 200,
     margin: 10,
     backgroundColor: '#3b82f6',
+  },
+  iconButton: {
+    backgroundColor: '#e3e4e6',
+    borderRadius: 15,
+  },
+  rowBack: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
   },
 });

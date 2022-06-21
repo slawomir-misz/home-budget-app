@@ -28,21 +28,23 @@ export default function AddTransactionForm() {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.patch(`transaction/save/${selectedCard}`, {
-      data,
+    axios.post(`transaction/save/${selectedCard}`, {
+      category: data.category,
+      price: data.price,
+      type: data.type,
     }).then(() => {
-      let transactionsTmp = [...transactions];
-      transactionsTmp = transactionsTmp.push({
+      const transactionsTmp = [...transactions];
+      transactionsTmp.push({
         price: data.price,
         category: data.category,
         type: data.type,
-        createdDate: '2022-06-19',
+        createdDate: '2022-06-21',
       });
       setTransactions(transactionsTmp);
       setComponentState((prevState) => ({
         ...prevState, loading: false, result: true,
       }));
-    }).catch((error) => {
+    }).catch(() => {
       setComponentState({
         loading: false,
         error: true,
@@ -74,7 +76,7 @@ export default function AddTransactionForm() {
              )}
             >
               <Select.Item label="Outgoing" value="outgoing" />
-              <Select.Item label="Incomming" value="incomming" />
+              <Select.Item label="Incoming" value="incoming" />
             </Select>
           )}
           name="type"
@@ -148,7 +150,7 @@ export default function AddTransactionForm() {
       </View>
       <View style={styles.input_container}>
         {(!componentState.loading && componentState.result)
-          ? <Result error={componentState.error} errorMessage={componentState.errorMessage} message="Card Added Successfully" />
+          ? <Result error={componentState.error} errorMessage={componentState.errorMessage} message="Transaction Added Successfully" />
           : (
             <Button
               onPress={handleSubmit(handleSaveButton)}

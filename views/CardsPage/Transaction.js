@@ -28,10 +28,8 @@ export default function Transaction({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    margin: 8,
-    width: '90%',
+    padding: 10,
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

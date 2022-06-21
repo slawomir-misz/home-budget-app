@@ -10,24 +10,27 @@ export const TransactionsContext = createContext('');
 export const TransactionsProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const axios = useAxiosInterceptors();
 
   useEffect(() => {
-    axios.get(`/transaction/get/${selectedCard}`).then((response) => {
-      setTransactions(response.data);
-      setLoading(false);
-    }).catch((error) => {
-      setIsError(error.response.data.message);
-      setLoading(false);
-    });
+    if (selectedCard) {
+      setLoading(true);
+      axios.get(`/transaction/get/${selectedCard}`).then((response) => {
+        setTransactions(response.data);
+        setLoading(false);
+      }).catch((error) => {
+        setIsError(error.response.data.message);
+        setLoading(false);
+      });
+    }
   }, [selectedCard]);
 
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <TransactionsContext.Provider value={{
-      transactions, setLoading, loading, isError, selectedCard, setSelectedCard,
+      transactions, setLoading, loading, isError, selectedCard, setSelectedCard, setTransactions,
     }}
     >
       {children}
