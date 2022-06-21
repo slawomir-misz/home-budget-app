@@ -5,22 +5,22 @@ import {
 } from 'native-base';
 import { StyleSheet, View } from 'react-native';
 
-export default function Result({ error, errorMessage, message }) {
-  if (error) {
+export default function Result({ errorMessage, message }) {
+  if (errorMessage) {
     return (
-      <View style={styles.result_container}>
-        <CloseIcon size="5" mt="0.5" color="danger.500" />
-        <Text color="danger.500" fontSize="md">
-          {errorMessage || 'Some error occured, try again'}
+      <View style={styles.container}>
+        <CloseIcon size="3" mt="0.5" color="danger.500" />
+        <Text color="danger.500" fontSize="md" pl={1}>
+          {errorMessage}
         </Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.result_container}>
+    <View style={styles.container}>
       <CheckIcon size="5" mt="0.5" color="emerald.500" />
-      <Text color="emerald.500" fontSize="md">
+      <Text color="emerald.500" fontSize="md" pl={1}>
         {message}
       </Text>
     </View>
@@ -28,10 +28,10 @@ export default function Result({ error, errorMessage, message }) {
 }
 
 const styles = StyleSheet.create({
-  result_container: {
+  container: {
     justifyContent: 'center',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });
