@@ -1,24 +1,27 @@
 import {
-  Avatar, Text, View, Input, Icon, Button,
+  Avatar, View, Input, Icon, Button,
 } from 'native-base';
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import React, { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../../components/Result/Result';
+import global from '../../styles/global';
+import CustomInput from '../../components/CustomInput/CustomInput';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const avatar = require('../../assets/avatar.png');
 
 export default function AccountManageForm() {
   const axios = useAxiosInterceptors();
+  const { decoded } = useContext(AuthContext);
   const {
     control,
     handleSubmit,
     watch,
   } = useForm();
   const password = watch('password');
-  const [show, setShow] = useState(false);
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
@@ -43,11 +46,11 @@ export default function AccountManageForm() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={global.default_wrapper}>
       <Avatar size="lg" source={avatar} style={styles.avatar} />
-      <View style={styles.input_container}>
+      <View style={global.default_container}>
         <Input
-          style={styles.input}
+          style={global.default_input}
           isDisabled
           InputLeftElement={(
             <Icon
@@ -57,131 +60,38 @@ export default function AccountManageForm() {
               color="#3b82f6"
             />
                 )}
-          placeholder="Username"
+          placeholder={decoded.sub}
         />
       </View>
-      <View style={styles.input_container}>
-        <Input
-          style={styles.input}
-          isDisabled
-          InputLeftElement={(
-            <Icon
-              as={<MaterialIcons name="mail" />}
-              size={5}
-              ml="2"
-              color="#3b82f6"
-            />
-                )}
-          placeholder="Email"
-        />
-      </View>
-      <View style={styles.input_container}>
-        <Controller
-          rules={{ required: 'Password is required' }}
+      <View style={global.default_container}>
+        <CustomInput
           control={control}
           name="password"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                isInvalid={!!error}
-                type={show ? 'text' : 'password'}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="lock" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                InputRightElement={(
-                  <Icon
-                    as={(
-                      <MaterialIcons
-                        name={show ? 'visibility' : 'visibility-off'}
-                      />
-                    )}
-                    size={5}
-                    mr="2"
-                    color="#3b82f6"
-                    onPress={() => setShow(!show)}
-                  />
-                )}
-                placeholder="Password"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          placeholder="Password"
+          iconName="lock"
+          rules={{ required: 'Password is required' }}
+          type="password"
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="password_repeat"
+          placeholder="Repeat Password"
+          iconName="lock"
           rules={{
             validate: (value) => value === password || 'Passwords do not match',
           }}
-          control={control}
-          name="password_repeat"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                isInvalid={!!error}
-                type={show ? 'text' : 'password'}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="lock" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                InputRightElement={(
-                  <Icon
-                    as={(
-                      <MaterialIcons
-                        name={show ? 'visibility' : 'visibility-off'}
-                      />
-                    )}
-                    size={5}
-                    mr="2"
-                    color="#3b82f6"
-                    onPress={() => setShow(!show)}
-                  />
-                )}
-                placeholder="Repeat password"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          type="password"
         />
       </View>
-      <View style={styles.input_container}>
+      <View style={global.default_container}>
         {(!componentState.loading && componentState.result)
-          ? <Result error={componentState.error} message="New password is active" />
+          ? <Result error={componentState.error} errorMessage="Some error occured" message="New password is active" />
           : (
             <Button
               onPress={handleSubmit(handlePasswordChange)}
-              style={styles.button}
+              style={global.default_button}
               isLoading={componentState.loading}
               isLoadingText="Changing..."
             >
@@ -198,17 +108,5 @@ const styles = StyleSheet.create({
     marginVertical: 25,
     backgroundColor: '#fff',
     alignSelf: 'center',
-  },
-  input_container: {
-    width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  input: {
-    height: 50,
-  },
-  button: {
-    margin: 0,
-    backgroundColor: '#3b82f6',
   },
 });
