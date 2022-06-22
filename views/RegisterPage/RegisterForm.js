@@ -77,6 +77,7 @@ export default function RegisterForm() {
           name="email"
           placeholder="Email"
           iconName="email"
+          keyboardType="email-address"
           rules={{
             pattern: { value: EMAIL_REGEX, message: 'Email is invalid' },
             required: 'Email is required',

@@ -8,7 +8,7 @@ import { Controller } from 'react-hook-form';
 import global from '../../styles/global';
 
 export default function CustomInput({
-  control, name, placeholder, iconName, rules, type,
+  control, name, placeholder, iconName, rules, type, keyboardType,
 }) {
   return (
     <Controller
@@ -24,6 +24,7 @@ export default function CustomInput({
             value={value}
             placeholder={placeholder}
             type={type}
+            keyboardType={keyboardType}
             isInvalid={error}
             onChangeText={onChange}
             onBlur={onBlur}

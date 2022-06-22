@@ -1,15 +1,17 @@
 /* eslint-disable no-unused-vars */
 import {
-  Button, Icon, Input, Text, View, Select,
+  Button, Icon, View, Select,
 } from 'native-base';
 import React, { useState, useContext } from 'react';
-import { StyleSheet } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { MaterialIcons } from '@expo/vector-icons';
 import Card from '../../components/Card/Card';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../../components/Result/Result';
 import { CardsContext } from '../../contexts/CardsContext';
+import global from '../../styles/global';
+import CustomInput from '../../components/CustomInput/CustomInput';
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
 
 export default function AddCardForm() {
   const CARDNAME_REGEX = /^[a-zA-Z0-9_.-]*$/;
@@ -28,28 +30,36 @@ export default function AddCardForm() {
   });
   const { control, handleSubmit } = useForm();
   const axios = useAxiosInterceptors();
+  const inputValues = [
+    {
+      label: 'Saving',
+      value: 'Saving',
+    },
+    {
+      label: 'Private',
+      value: 'Private',
+    },
+    {
+      label: 'Company',
+      value: 'Company',
+    },
+    {
+      label: 'Other',
+      value: 'Other',
+    },
+  ];
 
   const handleSaveButton = (data) => {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post('/card/save', {
-      cardNumber: data.cardNumber,
-      name: data.name,
-      type: data.type,
-      balance: data.balance,
-    }).then((response) => {
+    axios.post('/card/save', data).then((response) => {
       // push new card to context
       const cardsTmp = [...cards];
       cardsTmp.push(data);
       setCards(cardsTmp);
       // set card component by new values
-      setCardDetails({
-        cardNumber: data.cardNumber,
-        name: data.name,
-        type: data.type,
-        balance: data.balance,
-      });
+      setCardDetails(data);
       // change component state
       setComponentState((prevState) => ({
         ...prevState, loading: false, result: true,
@@ -72,8 +82,13 @@ export default function AddCardForm() {
         name={cardDetails.name}
         deleteButton={false}
       />
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="name"
+          placeholder="Card Name"
+          iconName="text"
+          keyboardType="default"
           rules={{
             required: 'Card name is required',
             minLength: {
@@ -86,42 +101,18 @@ export default function AddCardForm() {
             },
             pattern: { value: CARDNAME_REGEX, message: 'Card name is invalid' },
           }}
-          control={control}
-          name="name"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                isInvalid={!!error}
-                style={styles.input}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="short-text" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                placeholder="Card Name"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          type="text"
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="cardNumber"
+          placeholder="Last 4 number of card"
+          iconName="numeric"
+          keyboardType="numeric"
           rules={{
-            required: 'Last card numbers is required',
+            required: 'Last card 4 numbers is required',
             minLength: {
               value: 4,
               message: '4 numbers required',
@@ -131,136 +122,43 @@ export default function AddCardForm() {
               message: '4 numbers required',
             },
           }}
-          control={control}
-          name="cardNumber"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                keyboardType="numeric"
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="more-horiz" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                placeholder="Last card 4 numbers"
-              />
-              {error && (
-              <Text p={1} color="danger.500">
-                {error.message}
-              </Text>
-              )}
-            </>
-          )}
+          type="text"
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomSelect
           control={control}
-          render={({
-            field: { value, onChange },
-          }) => (
-            <Select
-              name="type"
-              selectedValue={value}
-              onValueChange={(itemValue) => onChange(itemValue)}
-              style={styles.input}
-              InputLeftElement={(
-                <Icon
-                  as={<MaterialIcons name="credit-card" />}
-                  size={5}
-                  ml="2"
-                  color="#3b82f6"
-                />
-             )}
-            >
-              <Select.Item label="Saving" value="Saving" />
-              <Select.Item label="Private" value="Private" />
-              <Select.Item label="Company" value="Company" />
-              <Select.Item label="Other" value="Other" />
-            </Select>
-          )}
           name="type"
+          iconName="credit-card-outline"
           defaultValue="Private"
+          inputValues={inputValues}
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
-          rules={{ required: 'Initial balance is required' }}
+      <View style={global.default_container}>
+        <CustomInput
           control={control}
           name="balance"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                keyboardType="numeric"
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="attach-money" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                placeholder="Initial Balance"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          placeholder="Initial card balance"
+          iconName="currency-usd"
+          keyboardType="numeric"
+          rules={{ required: 'Initial card balance is required' }}
+          type="text"
         />
       </View>
-      <View style={styles.input_container}>
+      <View style={global.default_container}>
         {(!componentState.loading && componentState.result)
           ? <Result error={componentState.error} errorMessage={componentState.errorMessage} message="Card Added Successfully" />
           : (
             <Button
               onPress={handleSubmit(handleSaveButton)}
-              style={styles.button}
+              style={global.default_button}
               isLoading={componentState.loading}
-              isLoadingText="Saving..."
+              isLoadingText="Adding..."
             >
-              Save
+              Add Card
             </Button>
           )}
       </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input_container: {
-    padding: 10,
-  },
-  input: {
-    height: 50,
-  },
-  button: {
-    margin: 0,
-    backgroundColor: '#3b82f6',
-  },
-});
