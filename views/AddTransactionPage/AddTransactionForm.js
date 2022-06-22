@@ -1,22 +1,52 @@
 /* eslint-disable no-unused-vars */
-import {
-  Text, View, Input, Icon, Button, Select,
-} from 'native-base';
+import { View, Button } from 'native-base';
 import React, { useState, useContext } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useForm } from 'react-hook-form';
+import { useRoute } from '@react-navigation/native';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../../components/Result/Result';
 import { TransactionsContext } from '../../contexts/TransactionsContext';
+import global from '../../styles/global';
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
+import CustomInput from '../../components/CustomInput/CustomInput';
 
 export default function AddTransactionForm() {
-  const { transactions, setTransactions, selectedCard } = useContext(TransactionsContext);
+  const { transactions, setTransactions } = useContext(TransactionsContext);
   const axios = useAxiosInterceptors();
+  const route = useRoute();
   const {
     control,
     handleSubmit,
   } = useForm();
+  const inputValuesType = [
+    {
+      label: 'Outgoing',
+      value: 'outgoing',
+    },
+    {
+      label: 'Incoming',
+      value: 'incoming',
+    },
+  ];
+
+  const inputValuesCategory = [
+    {
+      label: 'Shopping',
+      value: 'Shopping',
+    },
+    {
+      label: 'Bills',
+      value: 'Bills',
+    },
+    {
+      label: 'Subscriptions',
+      value: 'Subscriptions',
+    },
+    {
+      label: 'Transfer',
+      value: 'Transfer',
+    },
+  ];
 
   const [componentState, setComponentState] = useState({
     loading: false,
@@ -28,7 +58,7 @@ export default function AddTransactionForm() {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post(`transaction/save/${selectedCard}`, {
+    axios.post(`transaction/save/${route.params.activeCard}`, {
       category: data.category,
       price: data.price,
       type: data.type,
@@ -38,7 +68,7 @@ export default function AddTransactionForm() {
         price: data.price,
         category: data.category,
         type: data.type,
-        createdDate: '2022-06-21',
+        createdDate: '2022-06-22',
       });
       setTransactions(transactionsTmp);
       setComponentState((prevState) => ({
@@ -54,107 +84,43 @@ export default function AddTransactionForm() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.input_container}>
-        <Controller
+    <>
+      <View style={global.default_container}>
+        <CustomSelect
           control={control}
-          render={({
-            field: { value, onChange },
-          }) => (
-            <Select
-              name="type"
-              selectedValue={value}
-              onValueChange={(itemValue) => onChange(itemValue)}
-              style={styles.input}
-              InputLeftElement={(
-                <Icon
-                  as={<MaterialIcons name="compare-arrows" />}
-                  size={5}
-                  ml="2"
-                  color="#3b82f6"
-                />
-             )}
-            >
-              <Select.Item label="Outgoing" value="outgoing" />
-              <Select.Item label="Incoming" value="incoming" />
-            </Select>
-          )}
           name="type"
+          iconName="swap-horizontal"
           defaultValue="outgoing"
+          inputValues={inputValuesType}
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomSelect
           control={control}
-          render={({
-            field: { value, onChange },
-          }) => (
-            <Select
-              name="category"
-              selectedValue={value}
-              onValueChange={(itemValue) => onChange(itemValue)}
-              style={styles.input}
-              InputLeftElement={(
-                <Icon
-                  as={<MaterialIcons name="add-shopping-cart" />}
-                  size={5}
-                  ml="2"
-                  color="#3b82f6"
-                />
-             )}
-            >
-              <Select.Item label="Shopping" value="Shopping" />
-              <Select.Item label="Bills" value="Bills" />
-              <Select.Item label="Subscriptions" value="Subscriptions" />
-              <Select.Item label="Transfer" value="Transfer" />
-            </Select>
-          )}
           name="category"
-          defaultValue="Shopping"
+          iconName="cart-plus"
+          defaultValue="shopping"
+          inputValues={inputValuesCategory}
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
-          rules={{ required: 'Price is required' }}
+      <View style={global.default_container}>
+        <CustomInput
           control={control}
           name="price"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                keyboardType="numeric"
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="attach-money" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                placeholder="Price"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          placeholder="Price"
+          iconName="currency-usd"
+          keyboardType="numeric"
+          rules={{ required: 'Price is required' }}
+          type="text"
         />
       </View>
-      <View style={styles.input_container}>
+      <View style={global.default_container}>
         {(!componentState.loading && componentState.result)
           ? <Result error={componentState.error} errorMessage={componentState.errorMessage} message="Transaction Added Successfully" />
           : (
             <Button
               onPress={handleSubmit(handleSaveButton)}
-              style={styles.button}
+              style={global.default_button}
               isLoading={componentState.loading}
               isLoadingText="Saving..."
             >
@@ -162,24 +128,6 @@ export default function AddTransactionForm() {
             </Button>
           )}
       </View>
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-  },
-  input_container: {
-    width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  input: {
-    height: 50,
-  },
-  button: {
-    margin: 0,
-    backgroundColor: '#3b82f6',
-  },
-});

@@ -56,7 +56,12 @@ export default function TransactionsList({ activeCard }) {
         && (
           <View style={styles.add_icon_container}>
             <IconButton
-              onPress={() => navigation.navigate('AddTransaction')}
+              onPress={() => navigation.navigate(
+                'AddTransaction',
+                {
+                  activeCard,
+                },
+              )}
               style={styles.iconButton}
               p={4}
               icon={(
