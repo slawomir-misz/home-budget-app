@@ -15,21 +15,25 @@ const backgroundImage = require('../../assets/card_background.jpg');
 const backgroundImageGray = require('../../assets/card_background_gray.jpg');
 
 export default function Card({
-  balance, cardNumber, type, name, deleteButton,
+  balance, cardNumber, type, name, deleteButton, setActiveCard, isActive,
 }) {
-  const { setSelectedCard, selectedCard } = useContext(TransactionsContext);
+  const { getTransactions } = useContext(TransactionsContext);
   const [deleteCardModalVisible, setDeleteCardModalVisible] = useState(false);
   return (
     <>
-      <Pressable onPress={() => setSelectedCard(cardNumber)}>
-        <ImageBackground source={selectedCard === cardNumber ? backgroundImage : backgroundImageGray} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
+      <Pressable onPress={() => {
+        getTransactions(cardNumber);
+        setActiveCard(cardNumber);
+      }}
+      >
+        <ImageBackground source={isActive ? backgroundImage : backgroundImageGray} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
           <View style={styles.card_header}>
             <Text fontSize="2xl" style={styles.card_balance}>
               $
               {' '}
               {balance}
             </Text>
-            {deleteButton && (selectedCard === cardNumber) ? (
+            {deleteButton && isActive && (
               <Pressable onPress={() => setDeleteCardModalVisible(true)}>
                 <Icon
                   as={Octicons}
@@ -38,7 +42,7 @@ export default function Card({
                   color="#fff"
                 />
               </Pressable>
-            ) : null}
+            )}
           </View>
           <Text fontSize="2xl" style={styles.card_number}>{`****  ****  ****  ${cardNumber}`}</Text>
           <Text fontSize="xl" style={styles.card_type}>{`${name} ${type}`}</Text>

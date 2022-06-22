@@ -1,39 +1,35 @@
-/* eslint-disable react/function-component-definition */
 /* eslint-disable react/prop-types */
 import React, {
-  createContext, useState, useEffect,
+  createContext, useState,
 } from 'react';
 import useAxiosInterceptors from '../hooks/useAxiosInterceptors';
 
 export const TransactionsContext = createContext('');
 
-export const TransactionsProvider = ({ children }) => {
+export function TransactionsProvider({ children }) {
   const [transactions, setTransactions] = useState([]);
-  const [selectedCard, setSelectedCard] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const axios = useAxiosInterceptors();
 
-  useEffect(() => {
-    if (selectedCard) {
-      setLoading(true);
-      axios.get(`/transaction/get/${selectedCard}`).then((response) => {
-        setTransactions(response.data);
-        setLoading(false);
-      }).catch((error) => {
-        setIsError(error.response.data.message);
-        setLoading(false);
-      });
-    }
-  }, [selectedCard]);
+  const getTransactions = (cardNumber) => {
+    setLoading(true);
+    axios.get(`/transaction/get/${cardNumber}`).then((response) => {
+      setTransactions(response.data);
+      setLoading(false);
+    }).catch((error) => {
+      setIsError(error.response.data.message);
+      setLoading(false);
+    });
+  };
 
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <TransactionsContext.Provider value={{
-      transactions, setLoading, loading, isError, selectedCard, setSelectedCard, setTransactions,
+      transactions, setLoading, loading, isError, setTransactions, getTransactions,
     }}
     >
       {children}
     </TransactionsContext.Provider>
   );
-};
+}
