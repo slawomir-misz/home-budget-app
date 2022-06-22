@@ -13,7 +13,6 @@ export default function Logo() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     maxHeight: 200,

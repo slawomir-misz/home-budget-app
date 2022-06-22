@@ -57,6 +57,7 @@ function TabNavigator() {
         },
         tabBarActiveTintColor: '#3b82f6',
         tabBarInactiveTintColor: '#a3a3a3',
+        tabBarShowLabel: false,
       })}
     >
       <Tab.Screen name="Cards" component={CardsPage} />
