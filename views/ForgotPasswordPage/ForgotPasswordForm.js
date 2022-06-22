@@ -1,79 +1,68 @@
 import React, { useState } from 'react';
-import {
-  Input, Icon, Button, Text,
-} from 'native-base';
-import { StyleSheet, View } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { useForm } from 'react-hook-form';
+import { Button } from 'native-base';
+import { View } from 'react-native';
 import axios from '../../api/axios';
-import Result from './Result';
+import CustomInput from '../../components/CustomInput/CustomInput';
+import global from '../../styles/global';
+import Result from '../../components/Result/Result';
 
 export default function ForgotPasswordForm() {
-  const [email, setEmail] = useState('');
-  const [formInputError, setFormInputError] = useState(false);
+  const {
+    control,
+    handleSubmit,
+  } = useForm();
+  const EMAIL_REGEX = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
+    errorMessage: '',
     result: false,
   });
-  const handleLoginClick = () => {
-    if (email) {
-      setComponentState((prevState) => ({
-        ...prevState, loading: true,
-      }));
-      axios.patch(`/user/password/reset/${email}`).then(() => {
-        setComponentState((prevState) => ({
-          ...prevState, loading: false, result: true,
-        }));
-      }).catch(() => {
-        setComponentState({
-          loading: false,
-          error: true,
-          result: true,
-        });
-      });
-    } else {
-      setFormInputError(true);
-    }
-  };
 
-  const handleInputChange = (text) => {
-    setEmail(text);
-    setFormInputError(false);
+  const handleSendClick = (data) => {
+    setComponentState((prevState) => ({
+      ...prevState, loading: true,
+    }));
+    axios.patch(`/user/password/reset/${data.email}`).then(() => {
+      setComponentState((prevState) => ({
+        ...prevState, loading: false, result: true,
+      }));
+    }).catch((error) => {
+      setComponentState({
+        loading: false,
+        errorMessage: error.response.data.message,
+        error: true,
+        result: true,
+      });
+    });
   };
 
   if (!componentState.loading && componentState.result) {
     return (
-      <Result email={email} error={componentState.error} />
+      <Result error={componentState.error} errorMessage={componentState.errorMessage} message="New password was sent to your email" />
     );
   }
 
   return (
     <>
-      <View style={styles.input_container}>
-        <Input
-          onChange={(e) => handleInputChange(e.nativeEvent.text)}
-          style={styles.input}
-          isInvalid={formInputError}
-          InputLeftElement={(
-            <Icon
-              as={<MaterialIcons name="email" />}
-              size={5}
-              ml="2"
-              color="#3b82f6"
-            />
-      )}
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="email"
           placeholder="Email"
+          iconName="email"
+          rules={{
+            required: 'Email is required',
+            pattern: { value: EMAIL_REGEX, message: 'Email is invalid' },
+          }}
+          type="text"
         />
-        {formInputError && (
-        <Text p={1} color="danger.500">
-          Email is required
-        </Text>
-        )}
       </View>
-      <View style={styles.input_container}>
+      <View style={global.default_container}>
         <Button
-          onPress={handleLoginClick}
-          style={styles.button}
+          onPress={handleSubmit(handleSendClick)}
+          style={global.default_button}
           isLoading={componentState.loading}
           isLoadingText="Sending..."
         >
@@ -83,17 +72,3 @@ export default function ForgotPasswordForm() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  input_container: {
-    width: '80%',
-    padding: 10,
-  },
-  input: {
-    height: 50,
-  },
-  button: {
-    margin: 0,
-    backgroundColor: '#3b82f6',
-  },
-});

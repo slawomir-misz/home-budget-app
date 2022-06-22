@@ -18,6 +18,7 @@ export default function RegisterForm() {
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
+    errorMessage: '',
     result: false,
   });
 
@@ -36,14 +37,15 @@ export default function RegisterForm() {
     }).catch((error) => {
       setComponentState({
         loading: false,
-        error: error.response.data.message,
+        errorMessage: error.response.data.message,
+        error: true,
         result: true,
       });
     });
   };
 
   if (!componentState.loading && componentState.result) {
-    return <Result errorMessage={componentState.error} message="Registered Successfully" />;
+    return <Result error={componentState.error} errorMessage={componentState.errorMessage} message="Registered Successfully" />;
   }
 
   return (
