@@ -53,10 +53,11 @@ export default function AddCardForm() {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post('/card/save', data).then((response) => {
+    const newData = { ...data, cardNumber: parseInt(data.cardNumber, 10) };
+    axios.post('/card/save', newData).then(() => {
       // push new card to context
       const cardsTmp = [...cards];
-      cardsTmp.push(data);
+      cardsTmp.push(newData);
       setCards(cardsTmp);
       // set card component by new values
       setCardDetails(data);

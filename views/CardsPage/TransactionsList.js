@@ -40,12 +40,23 @@ export default function TransactionsList({ activeCard }) {
       </View>
     );
   }
-  if (transactions.length < 1 && !loading && activeCard) {
+  if (transactions.length < 1 && activeCard) {
     return (
       <View style={global.default_wrapper}>
         <View style={global.default_container}>
           <Text fontSize="xl" mb={3}>We did not find any transactions...</Text>
-          <Button style={global.default_button} onPress={() => navigation.navigate('AddTransaction')}>Add transaction</Button>
+          <Button
+            style={global.default_button}
+            onPress={() => navigation.navigate(
+              'AddTransaction',
+              {
+                activeCard,
+              },
+            )}
+          >
+            Add transaction
+
+          </Button>
         </View>
       </View>
     );

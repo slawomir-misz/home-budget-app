@@ -54,6 +54,7 @@ export default function Card({
         deleteCardModalVisible={deleteCardModalVisible}
         setDeleteCardModalVisible={setDeleteCardModalVisible}
         cardNumber={cardNumber}
+        setActiveCard={setActiveCard}
       />
       ) }
     </>

@@ -7,10 +7,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import { TransactionsContext } from '../../contexts/TransactionsContext';
+import { CardsContext } from '../../contexts/CardsContext';
 
 export default function TransactionDelete({ transactionId }) {
   const axios = useAxiosInterceptors();
   const { transactions, setTransactions } = useContext(TransactionsContext);
+  const { getCards } = useContext(CardsContext);
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
@@ -22,6 +24,7 @@ export default function TransactionDelete({ transactionId }) {
     }));
     axios.delete(`/transaction/delete/${transactionId}`)
       .then(() => {
+        getCards();
         const transactionsTmp = [...transactions];
         const filteredTransactions = transactionsTmp.filter(
           (transaction) => transaction.id !== transactionId,

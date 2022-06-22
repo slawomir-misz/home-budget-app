@@ -3,14 +3,16 @@ import { Button, Modal, Text } from 'native-base';
 import React, { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { CardsContext } from '../../contexts/CardsContext';
+import { TransactionsContext } from '../../contexts/TransactionsContext';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../Result/Result';
 
 export default function DeleteCardModal({
-  deleteCardModalVisible, setDeleteCardModalVisible, cardNumber,
+  deleteCardModalVisible, setDeleteCardModalVisible, cardNumber, setActiveCard,
 }) {
   const axios = useAxiosInterceptors();
   const { cards, setCards } = useContext(CardsContext);
+  const { setTransactions } = useContext(TransactionsContext);
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
@@ -20,9 +22,11 @@ export default function DeleteCardModal({
       ...prevState, loading: true,
     }));
     axios.delete(`/card/delete/${cardNumber}`).then(() => {
+      setActiveCard();
       const cardsTmp = [...cards];
       const filteredCards = cardsTmp.filter((card) => card.cardNumber !== cardNumber);
       setCards(filteredCards);
+      setTransactions([]);
       setComponentState((prevState) => ({
         ...prevState, loading: false,
       }));

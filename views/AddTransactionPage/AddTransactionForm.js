@@ -9,9 +9,11 @@ import { TransactionsContext } from '../../contexts/TransactionsContext';
 import global from '../../styles/global';
 import CustomSelect from '../../components/CustomSelect/CustomSelect';
 import CustomInput from '../../components/CustomInput/CustomInput';
+import { CardsContext } from '../../contexts/CardsContext';
 
 export default function AddTransactionForm() {
   const { transactions, setTransactions } = useContext(TransactionsContext);
+  const { getCards } = useContext(CardsContext);
   const axios = useAxiosInterceptors();
   const route = useRoute();
   const {
@@ -62,14 +64,10 @@ export default function AddTransactionForm() {
       category: data.category,
       price: data.price,
       type: data.type,
-    }).then(() => {
+    }).then((response) => {
+      getCards();
       const transactionsTmp = [...transactions];
-      transactionsTmp.push({
-        price: data.price,
-        category: data.category,
-        type: data.type,
-        createdDate: '2022-06-22',
-      });
+      transactionsTmp.push(response.data);
       setTransactions(transactionsTmp);
       setComponentState((prevState) => ({
         ...prevState, loading: false, result: true,
@@ -99,7 +97,7 @@ export default function AddTransactionForm() {
           control={control}
           name="category"
           iconName="cart-plus"
-          defaultValue="shopping"
+          defaultValue="Shopping"
           inputValues={inputValuesCategory}
         />
       </View>
