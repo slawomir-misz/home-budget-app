@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Input, Icon, Button, Text,
-} from 'native-base';
-import { MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, View } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
+import { Button, View } from 'native-base';
+import { useForm } from 'react-hook-form';
 import axios from '../../api/axios';
-import RegisterResult from './RegisterResult';
+import global from '../../styles/global';
+import CustomInput from '../../components/CustomInput/CustomInput';
+import Result from '../../components/Result/Result';
 
 export default function RegisterForm() {
   const {
@@ -17,7 +15,6 @@ export default function RegisterForm() {
   const EMAIL_REGEX = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
   const USERNAME_REGEX = /^[a-zA-Z0-9_.-]*$/;
   const password = watch('password');
-  const [show, setShow] = useState(false);
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
@@ -25,7 +22,6 @@ export default function RegisterForm() {
   });
 
   const handleRegisterClick = (data) => {
-    console.log(data);
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
@@ -40,20 +36,24 @@ export default function RegisterForm() {
     }).catch((error) => {
       setComponentState({
         loading: false,
-        error: error.response.data,
+        error: error.response.data.message,
         result: true,
       });
     });
   };
 
   if (!componentState.loading && componentState.result) {
-    return <RegisterResult error={componentState.error} />;
+    return <Result errorMessage={componentState.error} message="Registered Successfully" />;
   }
 
   return (
     <>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="login"
+          placeholder="Username"
+          iconName="account"
           rules={{
             required: 'Username is required',
             minLength: {
@@ -66,180 +66,48 @@ export default function RegisterForm() {
             },
             pattern: { value: USERNAME_REGEX, message: 'Username is invalid' },
           }}
-          control={control}
-          name="login"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                isInvalid={!!error}
-                style={styles.input}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="person" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                placeholder="Username"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          type="text"
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="email"
+          placeholder="Email"
+          iconName="email"
           rules={{
             pattern: { value: EMAIL_REGEX, message: 'Email is invalid' },
             required: 'Email is required',
           }}
-          control={control}
-          name="email"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                isInvalid={!!error}
-                style={styles.input}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="mail" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                placeholder="Email"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          type="text"
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
-          rules={{ required: 'Password is required' }}
+      <View style={global.default_container}>
+        <CustomInput
           control={control}
           name="password"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                isInvalid={!!error}
-                type={show ? 'text' : 'password'}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="lock" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                InputRightElement={(
-                  <Icon
-                    as={(
-                      <MaterialIcons
-                        name={show ? 'visibility' : 'visibility-off'}
-                      />
-                    )}
-                    size={5}
-                    mr="2"
-                    color="#3b82f6"
-                    onPress={() => setShow(!show)}
-                  />
-                )}
-                placeholder="Password"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          placeholder="Password"
+          iconName="lock"
+          rules={{ required: 'Password is required' }}
+          type="password"
         />
       </View>
-      <View style={styles.input_container}>
-        <Controller
+      <View style={global.default_container}>
+        <CustomInput
+          control={control}
+          name="password_repeat"
+          placeholder="Repeat Password"
+          iconName="lock"
           rules={{
             validate: (value) => value === password || 'Passwords do not match',
           }}
-          control={control}
-          name="password_repeat"
-          render={({
-            field: { value, onChange, onBlur },
-            fieldState: { error },
-          }) => (
-            <>
-              <Input
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={styles.input}
-                isInvalid={!!error}
-                type={show ? 'text' : 'password'}
-                InputLeftElement={(
-                  <Icon
-                    as={<MaterialIcons name="lock" />}
-                    size={5}
-                    ml="2"
-                    color="#3b82f6"
-                  />
-                )}
-                InputRightElement={(
-                  <Icon
-                    as={(
-                      <MaterialIcons
-                        name={show ? 'visibility' : 'visibility-off'}
-                      />
-                    )}
-                    size={5}
-                    mr="2"
-                    color="#3b82f6"
-                    onPress={() => setShow(!show)}
-                  />
-                )}
-                placeholder="Repeat password"
-              />
-              {error && (
-                <Text p={1} color="danger.500">
-                  {error.message}
-                </Text>
-              )}
-            </>
-          )}
+          type="password"
         />
       </View>
-      <View style={styles.input_container}>
+      <View style={global.default_container}>
         <Button
           onPress={handleSubmit(handleRegisterClick)}
-          style={styles.login_button}
+          style={global.default_button}
           isLoading={componentState.loading}
           isLoadingText="Registering..."
         >
@@ -249,27 +117,3 @@ export default function RegisterForm() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input_container: {
-    width: '80%',
-    padding: 10,
-  },
-  input: {
-    height: 50,
-  },
-  login_button: {
-    margin: 0,
-    backgroundColor: '#3b82f6',
-  },
-  register_button: {
-    margin: 0,
-    borderColor: '#3b82f6',
-  },
-});
