@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Button, Modal, Text } from 'native-base';
 import React, { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { CardsContext } from '../../contexts/CardsContext';
-import { TransactionsContext } from '../../contexts/TransactionsContext';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../Result/Result';
 
@@ -13,7 +11,6 @@ export default function DeleteCardModal({
 }) {
   const axios = useAxiosInterceptors();
   const { cards, setCards } = useContext(CardsContext);
-  const { selectedCard, setSelectedCard } = useContext(TransactionsContext);
   const [componentState, setComponentState] = useState({
     loading: false,
     error: false,
@@ -22,10 +19,9 @@ export default function DeleteCardModal({
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.delete(`/card/delete/${cardNumber}`).then((response) => {
+    axios.delete(`/card/delete/${cardNumber}`).then(() => {
       const cardsTmp = [...cards];
       const filteredCards = cardsTmp.filter((card) => card.cardNumber !== cardNumber);
-      if (cardNumber === selectedCard) { setSelectedCard(null); }
       setCards(filteredCards);
       setComponentState((prevState) => ({
         ...prevState, loading: false,

@@ -1,14 +1,51 @@
+/* eslint-disable react/prop-types */
 import {
-  Icon, IconButton,
+  Icon, IconButton, Spinner,
 } from 'native-base';
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
+import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
+import { TransactionsContext } from '../../contexts/TransactionsContext';
 
-export default function TransactionDelete() {
+export default function TransactionDelete({ transactionId }) {
+  const axios = useAxiosInterceptors();
+  const { transactions, setTransactions } = useContext(TransactionsContext);
+  const [componentState, setComponentState] = useState({
+    loading: false,
+    error: false,
+  });
+
+  const handleButtonClick = () => {
+    setComponentState((prevState) => ({
+      ...prevState, loading: true,
+    }));
+    axios.delete(`/transaction/delete/${transactionId}`)
+      .then(() => {
+        const transactionsTmp = [...transactions];
+        const filteredTransactions = transactionsTmp.filter(
+          (transaction) => transaction.id !== transactionId,
+        );
+        setTransactions(filteredTransactions);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  if (componentState.loading) {
+    return (
+      <IconButton
+        onPress={handleButtonClick}
+        style={styles.iconButton}
+        p={4}
+      >
+        <Spinner size="sm" color="#f43f5e" />
+      </IconButton>
+    );
+  }
   return (
     <IconButton
-      onPress={() => console.log('hehe')}
+      onPress={handleButtonClick}
       style={styles.iconButton}
       p={4}
       icon={(

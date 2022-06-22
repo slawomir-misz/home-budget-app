@@ -14,7 +14,7 @@ export function TransactionsProvider({ children }) {
 
   const getTransactions = (cardNumber) => {
     setLoading(true);
-    axios.get(`/transaction/get/${cardNumber}`).then((response) => {
+    axios.get(`/transaction/get/${cardNumber}?page=0`).then((response) => {
       setTransactions(response.data);
       setLoading(false);
     }).catch((error) => {

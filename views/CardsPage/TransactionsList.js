@@ -23,13 +23,13 @@ export default function TransactionsList({ activeCard }) {
       date={data.item.createdDate}
       price={data.item.price}
       type={data.item.type}
+      id={data.item.id}
     />
   );
 
-  // eslint-disable-next-line no-unused-vars
-  const renderHiddenItem = (data, rowMap) => (
+  const renderHiddenItem = (data) => (
     <View style={styles.rowBack}>
-      <TransactionDelete />
+      <TransactionDelete transactionId={data.item.id} />
     </View>
   );
 
