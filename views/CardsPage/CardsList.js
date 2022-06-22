@@ -5,6 +5,7 @@ import Card from '../../components/Card/Card';
 import { CardsContext } from '../../contexts/CardsContext';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import AddCard from './AddCard';
+import TransactionsList from './TransactionsList';
 
 const { width } = Dimensions.get('window');
 
@@ -19,28 +20,31 @@ export default function CardsList() {
     );
   }
   return (
-    <View style={styles.container}>
-      <ScrollView
-        pagingEnabled
-        horizontal
-        snapToInterval={width - 80}
-        snapToAlignment="center"
-      >
-        {cards.map((item) => (
-          <Card
-            balance={item.balance}
-            cardNumber={item.cardNumber}
-            type={item.type}
-            name={item.name}
-            deleteButton
-            key={item.cardNumber}
-            setActiveCard={setActiveCard}
-            isActive={activeCard === item.cardNumber}
-          />
-        ))}
-        <AddCard />
-      </ScrollView>
-    </View>
+    <>
+      <View style={styles.container}>
+        <ScrollView
+          pagingEnabled
+          horizontal
+          snapToInterval={width - 80}
+          snapToAlignment="center"
+        >
+          {cards.map((item) => (
+            <Card
+              balance={item.balance}
+              cardNumber={item.cardNumber}
+              type={item.type}
+              name={item.name}
+              deleteButton
+              key={item.cardNumber}
+              setActiveCard={setActiveCard}
+              isActive={activeCard === item.cardNumber}
+            />
+          ))}
+          <AddCard />
+        </ScrollView>
+      </View>
+      <TransactionsList activeCard={activeCard} />
+    </>
   );
 }
 
