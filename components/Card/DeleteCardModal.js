@@ -8,10 +8,10 @@ import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../Result/Result';
 
 export default function DeleteCardModal({
-  deleteCardModalVisible, setDeleteCardModalVisible, cardNumber, setActiveCard,
+  deleteCardModalVisible, setDeleteCardModalVisible, cardNumber,
 }) {
   const axios = useAxiosInterceptors();
-  const { cards, setCards } = useContext(CardsContext);
+  const { cards, setCards, setSelectedCard } = useContext(CardsContext);
   const { setTransactions } = useContext(TransactionsContext);
   const [componentState, setComponentState] = useState({
     loading: false,
@@ -22,14 +22,11 @@ export default function DeleteCardModal({
       ...prevState, loading: true,
     }));
     axios.delete(`/card/delete/${cardNumber}`).then(() => {
-      setActiveCard();
       const cardsTmp = [...cards];
       const filteredCards = cardsTmp.filter((card) => card.cardNumber !== cardNumber);
       setCards(filteredCards);
       setTransactions([]);
-      setComponentState((prevState) => ({
-        ...prevState, loading: false,
-      }));
+      setSelectedCard(0);
     }).catch((error) => {
       setComponentState({
         loading: false,

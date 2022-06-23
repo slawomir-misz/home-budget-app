@@ -12,11 +12,12 @@ import { TransactionsContext } from '../../contexts/TransactionsContext';
 import Transaction from './Transaction';
 import global from '../../styles/global';
 import TransactionDelete from './TransactionDelete';
+import { CardsContext } from '../../contexts/CardsContext';
 
-export default function TransactionsList({ activeCard }) {
-  const { transactions, loading } = useContext(TransactionsContext);
+export default function TransactionsList() {
+  const { transactions, contextState } = useContext(TransactionsContext);
+  const { selectedCard } = useContext(CardsContext);
   const navigation = useNavigation();
-
   const renderItem = (data) => (
     <Transaction
       category={data.item.category}
@@ -33,14 +34,14 @@ export default function TransactionsList({ activeCard }) {
     </View>
   );
 
-  if (loading) {
+  if (contextState.isLoading) {
     return (
       <View style={global.default_wrapper}>
         <LoadingSpinner />
       </View>
     );
   }
-  if (transactions.length < 1 && activeCard) {
+  if (transactions.length < 1 && selectedCard > 0) {
     return (
       <View style={global.default_wrapper}>
         <View style={global.default_container}>
@@ -50,7 +51,7 @@ export default function TransactionsList({ activeCard }) {
             onPress={() => navigation.navigate(
               'AddTransaction',
               {
-                activeCard,
+                selectedCard,
               },
             )}
           >
@@ -63,29 +64,28 @@ export default function TransactionsList({ activeCard }) {
   }
   return (
     <>
-      {activeCard && transactions.length > 0
-        && (
-          <View style={styles.add_icon_container}>
-            <IconButton
-              onPress={() => navigation.navigate(
-                'AddTransaction',
-                {
-                  activeCard,
-                },
-              )}
-              style={styles.iconButton}
-              p={4}
-              icon={(
-                <Icon
-                  as={MaterialCommunityIcons}
-                  name="plus-thick"
-                  size={6}
-                  color="#acacad"
-                />
+      {selectedCard && transactions.length > 0 ? (
+        <View style={styles.add_icon_container}>
+          <IconButton
+            onPress={() => navigation.navigate(
+              'AddTransaction',
+              {
+                selectedCard,
+              },
             )}
-            />
-          </View>
-        )}
+            style={styles.iconButton}
+            p={4}
+            icon={(
+              <Icon
+                as={MaterialCommunityIcons}
+                name="plus-thick"
+                size={6}
+                color="#acacad"
+              />
+            )}
+          />
+        </View>
+      ) : null}
       <View style={styles.list_container}>
         <SwipeListView
           data={transactions}

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { View, Button } from 'native-base';
 import React, { useState, useContext } from 'react';
 import { useForm } from 'react-hook-form';
@@ -60,7 +59,7 @@ export default function AddTransactionForm() {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post(`transaction/save/${route.params.activeCard}`, {
+    axios.post(`transaction/save/${route.params.selectedCard}`, {
       category: data.category,
       price: data.price,
       type: data.type,

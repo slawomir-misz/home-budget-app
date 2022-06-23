@@ -8,22 +8,21 @@ import {
   StyleSheet, ImageBackground, Dimensions,
 } from 'react-native';
 import DeleteCardModal from './DeleteCardModal';
-import { TransactionsContext } from '../../contexts/TransactionsContext';
+import { CardsContext } from '../../contexts/CardsContext';
 
 const { width } = Dimensions.get('window');
 const backgroundImage = require('../../assets/card_background.jpg');
 const backgroundImageGray = require('../../assets/card_background_gray.jpg');
 
 export default function Card({
-  balance, cardNumber, type, name, deleteButton, setActiveCard, isActive,
+  balance, cardNumber, type, name, deleteButton, isActive,
 }) {
-  const { getTransactions } = useContext(TransactionsContext);
+  const { setSelectedCard } = useContext(CardsContext);
   const [deleteCardModalVisible, setDeleteCardModalVisible] = useState(false);
   return (
     <>
       <Pressable onPress={() => {
-        getTransactions(cardNumber);
-        setActiveCard(cardNumber);
+        setSelectedCard(cardNumber);
       }}
       >
         <ImageBackground source={isActive ? backgroundImage : backgroundImageGray} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
@@ -54,7 +53,6 @@ export default function Card({
         deleteCardModalVisible={deleteCardModalVisible}
         setDeleteCardModalVisible={setDeleteCardModalVisible}
         cardNumber={cardNumber}
-        setActiveCard={setActiveCard}
       />
       ) }
     </>
