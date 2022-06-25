@@ -80,7 +80,7 @@ export default function AddOutgoingTransactionForm() {
         <CustomSelect
           control={control}
           name="category"
-          iconName="cart-plus"
+          iconName="credit-card-minus-outline"
           defaultValue="Shopping"
           inputValues={inputValuesCategory}
         />

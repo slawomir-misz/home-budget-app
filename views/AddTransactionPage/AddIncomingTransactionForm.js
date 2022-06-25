@@ -64,8 +64,8 @@ export default function AddIcomingTransactionForm() {
         <CustomSelect
           control={control}
           name="category"
-          iconName="cart-plus"
-          defaultValue="Shopping"
+          iconName="credit-card-plus-outline"
+          defaultValue="Transfer"
           inputValues={inputValuesCategory}
         />
       </View>
