@@ -15,16 +15,13 @@ const backgroundImage = require('../../assets/card_background.jpg');
 const backgroundImageGray = require('../../assets/card_background_gray.jpg');
 
 export default function Card({
-  balance, cardNumber, type, name, deleteButton, isActive,
+  balance, cardNumber, type, name, deleteButton, isActive, isDisabled,
 }) {
   const { setSelectedCard } = useContext(CardsContext);
   const [deleteCardModalVisible, setDeleteCardModalVisible] = useState(false);
   return (
     <>
-      <Pressable onPress={() => {
-        setSelectedCard(cardNumber);
-      }}
-      >
+      <Pressable onPress={() => (!isDisabled ? setSelectedCard(cardNumber) : null)}>
         <ImageBackground source={isActive ? backgroundImage : backgroundImageGray} resizeMode="cover" style={styles.view} imageStyle={{ borderRadius: 20 }}>
           <View style={styles.card_header}>
             <Text fontSize="2xl" style={styles.card_balance}>

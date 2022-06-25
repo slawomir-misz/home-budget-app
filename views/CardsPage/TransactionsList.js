@@ -65,25 +65,27 @@ export default function TransactionsList() {
   return (
     <>
       {selectedCard && transactions.length > 0 ? (
-        <View style={styles.add_icon_container}>
-          <IconButton
-            onPress={() => navigation.navigate(
-              'AddTransaction',
-              {
-                selectedCard,
-              },
-            )}
-            style={styles.iconButton}
-            p={4}
-            icon={(
-              <Icon
-                as={MaterialCommunityIcons}
-                name="plus-thick"
-                size={6}
-                color="#acacad"
-              />
-            )}
-          />
+        <View>
+          <View style={styles.add_icon_container}>
+            <IconButton
+              onPress={() => navigation.navigate(
+                'AddTransaction',
+                {
+                  selectedCard,
+                },
+              )}
+              style={styles.iconButton}
+              p={4}
+              icon={(
+                <Icon
+                  as={MaterialCommunityIcons}
+                  name="plus-thick"
+                  size={6}
+                  color="#acacad"
+                />
+              )}
+            />
+          </View>
         </View>
       ) : null}
       <View style={styles.list_container}>

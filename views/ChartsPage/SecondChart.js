@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
-import { Icon, Text, View } from 'native-base';
+import { Text, View } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
 import { BarChart } from 'react-native-gifted-charts';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import { CardsContext } from '../../contexts/CardsContext';
@@ -15,49 +13,6 @@ export default function SecondChart() {
   const { selectedCard } = useContext(CardsContext);
   const { transactions } = useContext(TransactionsContext);
   const windowWidth = Dimensions.get('window').width;
-  const data = [
-    {
-      value: 50,
-      labelComponent: () => (
-        <Icon
-          as={<MaterialCommunityIcons name="store" />}
-          size={5}
-          ml="2"
-        />
-      ),
-      topLabelComponent: () => (<Text style={{ color: 'blue', marginBottom: 6 }}>50</Text>),
-    },
-    {
-      value: 20,
-      labelComponent: () => (
-        <Icon
-          as={<MaterialCommunityIcons name="store" />}
-          size={5}
-          ml="2"
-        />
-      ),
-      topLabelComponent: () => (<Text style={{ color: 'blue', marginBottom: 6 }}>110</Text>),
-    }, {
-      value: 110,
-      labelComponent: () => (
-        <Icon
-          as={<MaterialCommunityIcons name="store" />}
-          size={5}
-          ml="2"
-        />
-      ),
-      topLabelComponent: () => (<Text style={{ color: 'blue', marginBottom: 6 }}>10</Text>),
-    }, {
-      value: 10,
-      labelComponent: () => (
-        <Icon
-          as={<MaterialCommunityIcons name="store" />}
-          size={5}
-          ml="2"
-        />
-      ),
-      topLabelComponent: () => (<Text style={{ color: 'blue', marginBottom: 6 }}>10</Text>),
-    }];
   const [chartData, setChartData] = useState([]);
 
   const prepareChartData = (x) => {

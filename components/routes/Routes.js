@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Octicons } from '@expo/vector-icons';
-import { Icon } from 'native-base';
+import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import { Button, Icon, IconButton } from 'native-base';
 import { AuthContext } from '../../contexts/AuthContext';
 import LoginPage from '../../views/LoginPage/LoginPage';
 import RegisterPage from '../../views/RegisterPage/RegisterPage';
@@ -22,6 +22,7 @@ import AddTransactionPage from '../../views/AddTransactionPage/AddTransactionPag
 
 function TabNavigator() {
   const Tab = createBottomTabNavigator();
+  const navigation = useNavigation();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -60,7 +61,25 @@ function TabNavigator() {
         tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen name="Cards" component={CardsPage} />
+      <Tab.Screen
+        name="Cards"
+        component={CardsPage}
+        options={{
+          headerRight: () => (
+            <IconButton
+              onPress={() => navigation.navigate('AddCard')}
+              icon={(
+                <Icon
+                  as={MaterialCommunityIcons}
+                  name="credit-card-plus-outline"
+                  size={6}
+                  color="#548BF5"
+                />
+)}
+            />
+          ),
+        }}
+      />
       <Tab.Screen name="Charts" component={ChartsPage} />
       <Tab.Screen name="Account" component={AccountManagePage} />
       <Tab.Screen

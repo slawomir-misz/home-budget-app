@@ -1,19 +1,16 @@
 import { View } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import Chart from './Chart';
 import SecondChart from './SecondChart';
 
 export default function ChartsPage() {
-  return (
-    <>
-      <View style={styles.wrapper}>
+  /*      <View style={styles.wrapper}>
         <Chart />
-      </View>
-      <View style={styles.wrapper}>
-        <SecondChart />
-      </View>
-    </>
+      </View> */
+  return (
+    <View style={styles.wrapper}>
+      <SecondChart />
+    </View>
   );
 }
 

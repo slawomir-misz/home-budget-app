@@ -82,6 +82,7 @@ export default function AddCardForm() {
         type={cardDetails.type}
         name={cardDetails.name}
         deleteButton={false}
+        isDisabled
       />
       <View style={global.default_container}>
         <CustomInput
