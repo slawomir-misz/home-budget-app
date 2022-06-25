@@ -2,6 +2,7 @@ import { View, Button } from 'native-base';
 import React, { useState, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRoute } from '@react-navigation/native';
+import { StyleSheet } from 'react-native';
 import useAxiosInterceptors from '../../hooks/useAxiosInterceptors';
 import Result from '../../components/Result/Result';
 import { TransactionsContext } from '../../contexts/TransactionsContext';
@@ -10,7 +11,7 @@ import CustomSelect from '../../components/CustomSelect/CustomSelect';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import { CardsContext } from '../../contexts/CardsContext';
 
-export default function AddTransactionForm() {
+export default function AddOutgoingTransactionForm() {
   const { transactions, setTransactions } = useContext(TransactionsContext);
   const { getCards } = useContext(CardsContext);
   const axios = useAxiosInterceptors();
@@ -19,16 +20,6 @@ export default function AddTransactionForm() {
     control,
     handleSubmit,
   } = useForm();
-  const inputValuesType = [
-    {
-      label: 'Outgoing',
-      value: 'outgoing',
-    },
-    {
-      label: 'Incoming',
-      value: 'incoming',
-    },
-  ];
 
   const inputValuesCategory = [
     {
@@ -47,6 +38,10 @@ export default function AddTransactionForm() {
       label: 'Transfer',
       value: 'Transfer',
     },
+    {
+      label: 'Car',
+      value: 'Car',
+    },
   ];
 
   const [componentState, setComponentState] = useState({
@@ -56,14 +51,13 @@ export default function AddTransactionForm() {
   });
 
   const handleSaveButton = (data) => {
+    const dataForm = {
+      ...data, type: 'outgoing',
+    };
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post(`transaction/save/${route.params.selectedCard}`, {
-      category: data.category,
-      price: data.price,
-      type: data.type,
-    }).then((response) => {
+    axios.post(`transaction/save/${route.params.selectedCard}`, dataForm).then((response) => {
       getCards();
       const transactionsTmp = [...transactions];
       transactionsTmp.push(response.data);
@@ -81,16 +75,7 @@ export default function AddTransactionForm() {
   };
 
   return (
-    <>
-      <View style={global.default_container}>
-        <CustomSelect
-          control={control}
-          name="type"
-          iconName="swap-horizontal"
-          defaultValue="outgoing"
-          inputValues={inputValuesType}
-        />
-      </View>
+    <View style={styles.wrapper}>
       <View style={global.default_container}>
         <CustomSelect
           control={control}
@@ -125,6 +110,14 @@ export default function AddTransactionForm() {
             </Button>
           )}
       </View>
-    </>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+  },
+});

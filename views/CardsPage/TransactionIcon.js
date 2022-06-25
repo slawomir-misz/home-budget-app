@@ -15,6 +15,8 @@ export default function TransactionIcon({ transactionCategory }) {
         return 'netflix';
       case 'Bills':
         return 'home-lightning-bolt-outline';
+      case 'Car':
+        return 'car';
       default:
         return 'alert';
     }

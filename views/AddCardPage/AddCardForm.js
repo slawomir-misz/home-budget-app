@@ -122,6 +122,10 @@ export default function AddCardForm() {
               value: 4,
               message: '4 numbers required',
             },
+            min: {
+              value: 1,
+              message: 'Card number cannot be 0',
+            },
           }}
           type="text"
         />
