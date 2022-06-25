@@ -40,7 +40,7 @@ export default function LoginForm() {
 
   return (
     <>
-      {!componentState.loading && componentState.error && <Result errorMessage="Check your username or password" /> }
+      {!componentState.loading && componentState.error && <Result error={componentState.error} errorMessage="Check your username or password" /> }
       <View style={global.default_container}>
         <CustomInput
           control={control}

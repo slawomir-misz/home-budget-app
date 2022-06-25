@@ -39,6 +39,14 @@ export default function CardsList() {
       </View>
     );
   }
+  if (!contextState.isLoading && cards.length < 1) {
+    return (
+      <View style={styles.container}>
+        <Text fontSize="2xl">Looks like you dont have any cards...</Text>
+        <Text fontSize="2xl">Fell free to add one!</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <Carousel
@@ -60,5 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     maxHeight: 200,
     justifyContent: 'center',
+    alignItems: 'center',
   },
 });
