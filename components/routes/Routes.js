@@ -5,7 +5,9 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
-import { Button, Icon, IconButton } from 'native-base';
+import {
+  Button, Icon, IconButton, Text,
+} from 'native-base';
 import { AuthContext } from '../../contexts/AuthContext';
 import LoginPage from '../../views/LoginPage/LoginPage';
 import RegisterPage from '../../views/RegisterPage/RegisterPage';
@@ -134,7 +136,11 @@ export default function Routes() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="AddCard" component={AddCardPage} />
-            <Stack.Screen name="AddTransaction" component={AddTransactionPage} />
+            <Stack.Screen
+              name="AddTransaction"
+              component={AddTransactionPage}
+              options={{ headerTitle: () => <Text bold fontSize="lg">Add new transaction</Text> }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </TransactionsProvider>

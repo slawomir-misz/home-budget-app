@@ -32,7 +32,7 @@ export default function SecondChart() {
   };
 
   useEffect(() => {
-    axios.get(`/transaction/getSum/${selectedCard}?date=06`).then((response) => {
+    axios.get(`/transaction/month-sum-by-category/${selectedCard}?date=01`).then((response) => {
       prepareChartData(response.data);
     }).catch((error) => {
       console.log(error);

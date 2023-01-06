@@ -22,7 +22,7 @@ export default function TransactionDelete({ transactionId }) {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.delete(`/transaction/delete/${transactionId}`)
+    axios.delete(`/transaction/${transactionId}`)
       .then(() => {
         getCards();
         const transactionsTmp = [...transactions];

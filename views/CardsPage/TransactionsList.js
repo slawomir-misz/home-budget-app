@@ -96,7 +96,7 @@ export default function TransactionsList() {
           previewOpenValue={-40}
           previewOpenDelay={3000}
           closeOnScroll
-          onTouchEnd={() => console.log('list ended')}
+          // onTouchEnd={() => console.log('list ended')}
         />
       </View>
     </>

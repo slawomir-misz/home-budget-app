@@ -57,7 +57,7 @@ export default function AddOutgoingTransactionForm() {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.post(`transaction/save/${route.params.selectedCard}`, dataForm).then((response) => {
+    axios.post(`transaction/${route.params.selectedCard}`, dataForm).then((response) => {
       getCards();
       const transactionsTmp = [...transactions];
       transactionsTmp.push(response.data);

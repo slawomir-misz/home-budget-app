@@ -1,15 +1,15 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import { Text, View } from 'native-base';
-import React, { useContext, useState } from 'react';
-import { ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { Button, Text, View } from 'native-base';
+import React, { useContext } from 'react';
+import { Dimensions, StyleSheet } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import { useNavigation } from '@react-navigation/native';
 import Card from '../../components/Card/Card';
 import { CardsContext } from '../../contexts/CardsContext';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import AddCard from './AddCard';
+import global from '../../styles/global';
 
 const SLIDER_WIDTH = Dimensions.get('window').width + 40;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
@@ -17,6 +17,7 @@ const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 export default function CardsList() {
   const { cards, contextState, selectedCard } = useContext(CardsContext);
   const isCarousel = React.useRef(null);
+  const navigation = useNavigation();
 
   function CarouselCardItem({ item }) {
     return (
@@ -41,9 +42,12 @@ export default function CardsList() {
   }
   if (!contextState.isLoading && cards.length < 1) {
     return (
-      <View style={styles.container}>
-        <Text fontSize="2xl">Looks like you dont have any cards...</Text>
-        <Text fontSize="2xl">Fell free to add one!</Text>
+      <View style={global.default_wrapper}>
+        <View style={global.default_container}>
+          <Text fontSize="2xl">Looks like you dont have any cards...</Text>
+          <Text fontSize="2xl">Fell free to add one!</Text>
+          <Button style={global.default_button} mt={2} onPress={() => navigation.navigate('AddCard')}>Add Card</Button>
+        </View>
       </View>
     );
   }

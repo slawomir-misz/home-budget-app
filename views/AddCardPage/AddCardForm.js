@@ -54,7 +54,7 @@ export default function AddCardForm() {
       ...prevState, loading: true,
     }));
     const newData = { ...data, cardNumber: parseInt(data.cardNumber, 10) };
-    axios.post('/card/save', newData).then(() => {
+    axios.post('/card', newData).then(() => {
       // push new card to context
       const cardsTmp = [...cards];
       cardsTmp.push(newData);

@@ -32,7 +32,7 @@ export default function AccountManageForm() {
     setComponentState((prevState) => ({
       ...prevState, loading: true,
     }));
-    axios.patch(`/user/password/change?password=${data.password}`).then(() => {
+    axios.patch(`/user/change-password/?password=${data.password}`).then(() => {
       setComponentState((prevState) => ({
         ...prevState, loading: false, result: true,
       }));
