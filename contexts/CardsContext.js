@@ -18,7 +18,7 @@ export const CardsProvider = ({ children }) => {
   });
 
   const getCards = () => {
-    axios.get('/card/get').then((response) => {
+    axios.get('/card').then((response) => {
       setCards(response.data);
       if (response.data.length > 0 && selectedCard === 0) {
         setSelectedCard(response.data[0].cardNumber);

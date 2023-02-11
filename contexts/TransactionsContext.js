@@ -22,7 +22,7 @@ export function TransactionsProvider({ children }) {
       setContextState((prevState) => ({
         ...prevState, isLoading: true,
       }));
-      axios.get(`/transaction/get/${selectedCard}?page=0`).then((response) => {
+      axios.get(`/transaction/${selectedCard}?page=0`).then((response) => {
         setTransactions(response.data);
         setContextState((prevState) => ({
           ...prevState, isLoading: false,
